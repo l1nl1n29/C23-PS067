@@ -1,5 +1,5 @@
 # Use the official Python base image
-FROM python:3.8
+FROM python:3.9-slim-buster
 
 # Set the working directory in the container
 WORKDIR /app
@@ -13,8 +13,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code to the container
 COPY . .
 
-# Expose the port the application runs on
+# Expose the port on which the application will run
 EXPOSE 5000
 
+# Set the environment variables for Flask
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
 # Run the application
-CMD ["python", "app.py"]
+CMD ["flask", "run"]

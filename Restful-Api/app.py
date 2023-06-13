@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, 
 from flask_restful import Resource, Api
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -26,7 +26,7 @@ UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Set SQLAlchemy database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:lh29@localhost/flaskdb'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:12345678@34.128.78.143/flaskdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -57,7 +57,7 @@ class RegisterUser(Resource):
             db.session.add(authData)
             db.session.commit()
             return {"error": False, "message": "User Created"}, 200
-        return {"msg": "Username/password cannot be empty"}, 400
+        return {"message": "Username/password cannot be empty"}, 400
 
 # Login user endpoint
 # Login user endpoint
@@ -81,20 +81,20 @@ class LoginUser(Resource):
                     "token": token
                 }
             }, 200
-        return {"msg": "Login failed. Please try again"}, 401
+        return {"message": "Login failed. Please try again"}, 401
 
 # Logout user endpoint
 class LogoutUser(Resource):
     def get(self):
         session.pop('token', None)
-        return {"msg": "Logout successful"}, 200
+        return {"message": "Logout successful"}, 200
 
 # Upload image endpoint
 class UploadImage(Resource):
     def post(self):
         # Check if token is present
         if 'Authorization' not in request.headers:
-            return {"msg": "Authorization token is missing"}, 401
+            return {"message": "Authorization token is missing"}, 401
 
         # Extract the token from the Authorization header
         token = request.headers['Authorization'].split()[1]
@@ -104,7 +104,7 @@ class UploadImage(Resource):
             decoded_token = jwt.decode(token, app.secret_key, algorithms=['HS256'])
             current_identity = decoded_token['username']
         except jwt.InvalidTokenError:
-            return {"msg": "Invalid token"}, 401
+            return {"message": "Invalid token"}, 401
 
         # file = '../Model/images/laptop.jpg'
         image = generate_image_from_base64(
@@ -146,7 +146,7 @@ class CaptureImage(Resource):
         # Perform classification on the captured image
         classification_result = classify_image(captured_image_path)
 
-        return jsonify({"msg": "Image captured successfully", "classification": classification_result}), 200
+        return jsonify({"message": "Image captured successfully", "classification": classification_result}), 200
 
 # Function to classify the image
 def classify_image(image_path):
